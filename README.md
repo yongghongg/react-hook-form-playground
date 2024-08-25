@@ -32,8 +32,12 @@ To provide real-life examples of forms created by react-hook-form (RHF)
 6. Multi-step form
 7. More advanced forms coming
 
-## Things to cover
+## React-hook-form functions to cover
 1. Validation mode
 2. Conditional rendering
 3. Focus on next field
 4. Scroll to error
+
+## Things to do
+- [ ] Add unit tests
+

@@ -5,13 +5,13 @@ import TextField from '@/components/TextField/TextField';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import FieldGroup from '@/components/ui/field-group';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Slider } from '@/components/ui/slider';
 import { Switch } from '@/components/ui/switch';
 import { isNil } from 'lodash-es';
 import { useState } from 'react';
-import { SubmitHandler, useForm, ValidationMode } from 'react-hook-form';
+import { SubmitHandler, ValidationMode, useForm } from 'react-hook-form';
 
 interface User {
   email: string;
@@ -23,21 +23,25 @@ interface LoginFormValues {
   remember: boolean;
 }
 
-type modeType = keyof ValidationMode;
+type ModeType = keyof ValidationMode;
+type ReValidateMode = Exclude<ModeType, 'onTouched' | 'all'>;
+
 interface SimpleLoginFormProps {
   shouldFocusError: boolean;
-  mode: modeType;
+  mode: ModeType;
+  revalidateMode: ReValidateMode;
+  delayError: number;
 }
 
 // const Button = tw.button`w-full rounded border bg-blue-600 p-3 font-bold text-white transition-colors duration-300 hover:bg-blue-700`;
 
-const SimpleLoginForm: React.FC<SimpleLoginFormProps> = ({ shouldFocusError, mode }) => {
+const SimpleLoginForm: React.FC<SimpleLoginFormProps> = ({ shouldFocusError, mode, delayError }) => {
   const [result, setResult] = useState<LoginFormValues | null>(null);
   const {
     register,
     handleSubmit,
     formState: { errors }
-  } = useForm<LoginFormValues>({ shouldFocusError, mode: mode, delayError: 5000 });
+  } = useForm<LoginFormValues>({ shouldFocusError, mode: mode, delayError });
 
   const onSubmit: SubmitHandler<LoginFormValues> = ({ email, password, remember }) => {
     setResult({ email, password, remember });
@@ -98,58 +102,67 @@ const SimpleLoginForm: React.FC<SimpleLoginFormProps> = ({ shouldFocusError, mod
   );
 };
 
-const validationModes: modeType[] = ['onBlur', 'onChange', 'onSubmit', 'onTouched', 'all'];
+const validateModes: ModeType[] = ['onBlur', 'onChange', 'onSubmit', 'onTouched', 'all'];
+const reValidateModes: ReValidateMode[] = ['onBlur', 'onChange', 'onSubmit'];
+const configItems = ['validation-mode', 'should-focus-error', 'delayError'];
 
 export default function SimpleLogin() {
   const [shouldFocusError, setShouldFocusError] = useState(true);
-  const [selectedMode, setSelectedMode] = useState<modeType>('onSubmit');
+  const [selectedMode, setSelectedMode] = useState<ModeType>('onSubmit');
+  const [delayError, setDelayError] = useState(0);
   const [expandedItems, setExpandedItems] = useState<string[]>(['item-1', 'item-3']);
-
-  const onAccordionChange = (value: string[]) => {
-
-  }
 
   return (
     <div className={styles.container}>
       <div className="max-lg:hidden">
         <aside>
-          <div>Configuration</div>
-          <FieldGroup>
-            <Switch
-              id="shouldFocusError"
-              checked={shouldFocusError === true}
-              onCheckedChange={() => setShouldFocusError(!shouldFocusError)}
-            />
-            <Label htmlFor="shouldFocusError">shouldFocusError</Label>
-          </FieldGroup>
-          <FieldGroup>
-            <Label>Validation mode</Label>
-            <RadioGroup defaultValue="onSubmit" onValueChange={(e) => setSelectedMode(e as modeType)}>
-              {validationModes.map((mode, index) => {
-                const id = `mode-${index}`;
-                return (
-                  <div key={id} className="flex items-center space-x-2">
-                    <RadioGroupItem value={mode} id={id} checked={selectedMode === mode} />
-                    <Label htmlFor={id}>{mode}</Label>
-                  </div>
-                );
-              })}
-            </RadioGroup>
-          </FieldGroup>
+          <div>UseForm Configuration</div>
           <Accordion type="multiple" className="w-full" value={expandedItems} onValueChange={setExpandedItems}>
             <AccordionItem value="item-1">
-              <AccordionTrigger>Is it accessible?</AccordionTrigger>
-              <AccordionContent>Yes. It adheres to the WAI-ARIA design pattern.</AccordionContent>
+              <AccordionTrigger>Validation Mode</AccordionTrigger>
+              <AccordionContent>
+                <RadioGroup defaultValue="onSubmit" onValueChange={(e) => setSelectedMode(e as ModeType)}>
+                  {validateModes.map((mode, index) => {
+                    const id = `mode-${index}`;
+                    const displayMode = mode === 'onSubmit' ? `${mode} (default)` : mode;
+                    return (
+                      <div key={id} className="flex items-center space-x-2">
+                        <RadioGroupItem value={mode} id={id} checked={selectedMode === mode} />
+                        <Label htmlFor={id}>{displayMode}</Label>
+                      </div>
+                    );
+                  })}
+                </RadioGroup>
+              </AccordionContent>
             </AccordionItem>
             <AccordionItem value="item-2">
-              <AccordionTrigger>Is it styled?</AccordionTrigger>
+              <AccordionTrigger>shouldFocusError</AccordionTrigger>
               <AccordionContent>
-                Yes. It comes with default styles that matches the other components&apos; aesthetic.
+                <Switch
+                  id="shouldFocusError"
+                  checked={shouldFocusError === true}
+                  onCheckedChange={() => setShouldFocusError(!shouldFocusError)}
+                />
+                <Label htmlFor="shouldFocusError">shouldFocusError</Label>
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="item-3">
-              <AccordionTrigger>Is it animated?</AccordionTrigger>
-              <AccordionContent>Yes. It's animated by default, but you can disable it if you prefer.</AccordionContent>
+              <AccordionTrigger>delayError</AccordionTrigger>
+              <AccordionContent>
+                <Label>delayError (milliseconds)</Label>
+                <div>
+                  <div className="mb-3 flex items-center justify-between">
+                    <span>0</span>
+                    <span>10000</span>
+                  </div>
+                  <Slider
+                    defaultValue={[delayError]}
+                    max={10000}
+                    step={1000}
+                    onValueChange={(val) => setDelayError(val[0])}
+                  />
+                </div>
+              </AccordionContent>
             </AccordionItem>
           </Accordion>
         </aside>
@@ -157,7 +170,12 @@ export default function SimpleLogin() {
       <main>
         {/* <nav>Header</nav> */}
         <div className={styles.mainContent}>
-          <SimpleLoginForm key={selectedMode} shouldFocusError={shouldFocusError} mode={selectedMode} />
+          <SimpleLoginForm
+            key={selectedMode}
+            shouldFocusError={shouldFocusError}
+            mode={selectedMode}
+            delayError={delayError}
+          />
         </div>
       </main>
     </div>
