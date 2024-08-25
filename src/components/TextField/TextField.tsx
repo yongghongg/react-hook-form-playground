@@ -27,8 +27,12 @@ const TextField: ForwardRefRenderFunction<HTMLInputElement, TextFieldProps> = (
   ref
 ) => {
   return (
-    <div className='mb-4'>
-      {label && <Label className='font-bold' htmlFor={fieldName}>{label}</Label>}
+    <div className="mb-4">
+      {label && (
+        <Label className="font-bold" htmlFor={fieldName}>
+          {label}
+        </Label>
+      )}
       <Input
         id={fieldName}
         ref={ref}
