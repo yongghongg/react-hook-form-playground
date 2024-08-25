@@ -1,11 +1,17 @@
 'use client';
 
-import styles from '@/app/simple-login/styles.module.css';
+import styles from '@/app/simple-login/SimpleLogin.module.css';
 import TextField from '@/components/TextField/TextField';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
+import FieldGroup from '@/components/ui/field-group';
+import { Label } from '@/components/ui/label';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Switch } from '@/components/ui/switch';
 import { isNil } from 'lodash-es';
 import { useState } from 'react';
-import { SubmitHandler, useForm } from 'react-hook-form';
-import tw from 'twin.macro';
+import { SubmitHandler, useForm, ValidationMode } from 'react-hook-form';
 
 interface User {
   email: string;
@@ -17,13 +23,13 @@ interface LoginFormValues {
   remember: boolean;
 }
 
-type modeType = 'onBlur' | 'onChange' | 'onSubmit';
+type modeType = keyof ValidationMode;
 interface SimpleLoginFormProps {
   shouldFocusError: boolean;
   mode: modeType;
 }
 
-const Button = tw.button`w-full rounded border bg-blue-600 p-3 font-bold text-white transition-colors duration-300 hover:bg-blue-700`;
+// const Button = tw.button`w-full rounded border bg-blue-600 p-3 font-bold text-white transition-colors duration-300 hover:bg-blue-700`;
 
 const SimpleLoginForm: React.FC<SimpleLoginFormProps> = ({ shouldFocusError, mode }) => {
   const [result, setResult] = useState<LoginFormValues | null>(null);
@@ -31,7 +37,7 @@ const SimpleLoginForm: React.FC<SimpleLoginFormProps> = ({ shouldFocusError, mod
     register,
     handleSubmit,
     formState: { errors }
-  } = useForm<LoginFormValues>({ shouldFocusError, mode: mode });
+  } = useForm<LoginFormValues>({ shouldFocusError, mode: mode, delayError: 5000 });
 
   const onSubmit: SubmitHandler<LoginFormValues> = ({ email, password, remember }) => {
     setResult({ email, password, remember });
@@ -57,6 +63,7 @@ const SimpleLoginForm: React.FC<SimpleLoginFormProps> = ({ shouldFocusError, mod
       <h2 className={styles.header}>Login</h2>
       <TextField
         fieldName="email"
+        label="Email"
         showError={!isNil(errors.email)}
         errorMessage={errors.email?.message}
         {...register('email', {
@@ -81,40 +88,78 @@ const SimpleLoginForm: React.FC<SimpleLoginFormProps> = ({ shouldFocusError, mod
         })}
       />
       <div className={styles.rememberMe}>
-        <input id="remember" type="checkbox" {...register('remember')} />
+        <Checkbox id="remember" {...register('remember')} />
         <label htmlFor="remember">Remember me</label>
       </div>
-      <Button type="submit">Login</Button>
+      <Button className="w-full font-bold" type="submit" size="lg">
+        Login
+      </Button>
     </form>
   );
 };
 
+const validationModes: modeType[] = ['onBlur', 'onChange', 'onSubmit', 'onTouched', 'all'];
+
 export default function SimpleLogin() {
   const [shouldFocusError, setShouldFocusError] = useState(true);
-  const [mode, setMode] = useState<modeType>('onSubmit');
+  const [selectedMode, setSelectedMode] = useState<modeType>('onSubmit');
+  const [expandedItems, setExpandedItems] = useState<string[]>(['item-1', 'item-3']);
+
+  const onAccordionChange = (value: string[]) => {
+
+  }
 
   return (
     <div className={styles.container}>
-      {/* <button
-        className={styles.submitButton}
-        onClick={() => setShouldFocusError(!shouldFocusError)}
-        type="button"
-      >{`Set shouldFocusError to ${
-        shouldFocusError ? "true" : "false"
-      }`}</button>
-      <button
-        className={styles.submitButton}
-        onClick={() => setMode("onSubmit")}
-      >
-        Set mode to onSubmit
-      </button>
-      <button
-        className={styles.submitButton}
-        onClick={() => setMode("onChange")}
-      >
-        Set mode to onChange
-      </button> */}
-      <SimpleLoginForm shouldFocusError={shouldFocusError} mode={mode} key={mode} />
+      <div className="max-lg:hidden">
+        <aside>
+          <div>Configuration</div>
+          <FieldGroup>
+            <Switch
+              id="shouldFocusError"
+              checked={shouldFocusError === true}
+              onCheckedChange={() => setShouldFocusError(!shouldFocusError)}
+            />
+            <Label htmlFor="shouldFocusError">shouldFocusError</Label>
+          </FieldGroup>
+          <FieldGroup>
+            <Label>Validation mode</Label>
+            <RadioGroup defaultValue="onSubmit" onValueChange={(e) => setSelectedMode(e as modeType)}>
+              {validationModes.map((mode, index) => {
+                const id = `mode-${index}`;
+                return (
+                  <div key={id} className="flex items-center space-x-2">
+                    <RadioGroupItem value={mode} id={id} checked={selectedMode === mode} />
+                    <Label htmlFor={id}>{mode}</Label>
+                  </div>
+                );
+              })}
+            </RadioGroup>
+          </FieldGroup>
+          <Accordion type="multiple" className="w-full" value={expandedItems} onValueChange={setExpandedItems}>
+            <AccordionItem value="item-1">
+              <AccordionTrigger>Is it accessible?</AccordionTrigger>
+              <AccordionContent>Yes. It adheres to the WAI-ARIA design pattern.</AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="item-2">
+              <AccordionTrigger>Is it styled?</AccordionTrigger>
+              <AccordionContent>
+                Yes. It comes with default styles that matches the other components&apos; aesthetic.
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="item-3">
+              <AccordionTrigger>Is it animated?</AccordionTrigger>
+              <AccordionContent>Yes. It's animated by default, but you can disable it if you prefer.</AccordionContent>
+            </AccordionItem>
+          </Accordion>
+        </aside>
+      </div>
+      <main>
+        {/* <nav>Header</nav> */}
+        <div className={styles.mainContent}>
+          <SimpleLoginForm key={selectedMode} shouldFocusError={shouldFocusError} mode={selectedMode} />
+        </div>
+      </main>
     </div>
   );
 }

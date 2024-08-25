@@ -36,13 +36,13 @@
   margin-bottom: 1rem;
 }
 
-.field label {
+/* .field label {
   display: block;
   font-size: 0.9rem;
   font-weight: 500;
   color: #333;
   margin-bottom: 0.5rem;
-}
+} */
 
 .input {
   width: 100%;

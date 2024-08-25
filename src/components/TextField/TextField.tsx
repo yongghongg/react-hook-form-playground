@@ -1,11 +1,11 @@
-import { forwardRef, ReactElement, type ForwardRefRenderFunction } from "react";
-import styles from "@/components/TextField/TextField.module.css";
-import { FieldErrors, FieldValues, UseFormRegister } from "react-hook-form";
-import clsx from "clsx";
+import styles from '@/components/TextField/TextField.module.css';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { forwardRef, type ForwardRefRenderFunction } from 'react';
 
 interface TextFieldProps {
   fieldName: string;
-  type?: "text" | "password" | "email";
+  type?: 'text' | 'password' | 'email';
   label?: string;
   placeholder?: string;
   hidePlaceholder?: boolean;
@@ -16,7 +16,7 @@ interface TextFieldProps {
 const TextField: ForwardRefRenderFunction<HTMLInputElement, TextFieldProps> = (
   {
     fieldName,
-    type = "text",
+    type = 'text',
     label,
     placeholder = `Enter your ${fieldName}`,
     hidePlaceholder = false,
@@ -27,13 +27,13 @@ const TextField: ForwardRefRenderFunction<HTMLInputElement, TextFieldProps> = (
   ref
 ) => {
   return (
-    <div className={styles.field}>
-      {label && <label htmlFor={fieldName}>{label}</label>}
-      <input
+    <div className='mb-4'>
+      {label && <Label className='font-bold' htmlFor={fieldName}>{label}</Label>}
+      <Input
         id={fieldName}
         ref={ref}
         type={type}
-        className={clsx(styles.input, showError && styles.errorInput)}
+        // className={clsx(styles.input, showError && styles.errorInput)}
         placeholder={hidePlaceholder ? undefined : placeholder}
         {...props}
       />
