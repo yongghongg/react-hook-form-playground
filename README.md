@@ -1,4 +1,5 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+This is a [Next.js](https://nextjs.org/) project bootstrapped with
+[`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
 
@@ -13,16 +14,18 @@ pnpm dev
 # or
 bun dev
 ```
+
 ## Introduction
+
 To provide real-life examples of forms created by react-hook-form (RHF)
 
-
 ## Examples
+
 1. Simple login form
-   - Variant: 
-      1. Validation mode: onChange, onBlur, onSubmit (but how to set this dynamically? -> the answer is to use key)
-      2. Should focus error
-      3. Should unregister
+   - Variant:
+     1. Validation mode: onChange, onBlur, onSubmit (but how to set this dynamically? -> the answer is to use key)
+     2. Should focus error
+     3. Should unregister
    - Api covered:
      - register
 2. Registration form
@@ -32,12 +35,18 @@ To provide real-life examples of forms created by react-hook-form (RHF)
 6. Multi-step form
 7. More advanced forms coming
 
+## Configuration feature
+
+1. Add reset to default
+2. Show form values like: formState, fieldState, error etc
+
 ## React-hook-form functions to cover
+
 1. Validation mode
 2. Conditional rendering
 3. Focus on next field
 4. Scroll to error
 
 ## Things to do
-- [ ] Add unit tests
 
+- [ ] Add unit tests

@@ -1,16 +1,12 @@
 'use client';
 
 import styles from '@/app/simple-login/SimpleLogin.module.css';
+import FormConfiguration from '@/components/FormConfiguration/FormConfiguration';
+import { FormConfigType } from '@/components/FormConfiguration/FormConfiguration.type';
 import TextField from '@/components/TextField/TextField';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Label } from '@/components/ui/label';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Slider } from '@/components/ui/slider';
-import { Switch } from '@/components/ui/switch';
 import { isNil } from 'lodash-es';
-import { Settings2 } from 'lucide-react';
 import { useState } from 'react';
 import { SubmitHandler, ValidationMode, useForm } from 'react-hook-form';
 
@@ -114,6 +110,13 @@ export default function SimpleLogin() {
   const [selectedReValidationMode, setSelectedReValidationMode] = useState<ReValidateMode>('onSubmit');
   const [delayError, setDelayError] = useState(0);
   const [expandedItems, setExpandedItems] = useState<string[]>(configItems);
+  const { control, register, setValue, watch } = useForm<FormConfigType>({
+    defaultValues: {
+      mode: 'onSubmit', reValidateMode: 'onSubmit', delayError: 0, shouldFocusError: true
+    }
+  });
+
+  console.log(watch('mode'));
 
   const uniqueKey = `${selectedMode}-${selectedReValidationMode}`;
 
@@ -121,11 +124,8 @@ export default function SimpleLogin() {
     <div className={styles.container}>
       <div className="min-h-screen p-4 shadow-md max-lg:hidden">
         <aside>
-          <div className="flex-center flex justify-between">
-            <Settings2 />
-            <h2>UseForm Configuration</h2>
-          </div>
-          <Accordion type="multiple" className="w-full" value={expandedItems} onValueChange={setExpandedItems}>
+          <FormConfiguration register={register} control={control} />
+          {/* <Accordion type="multiple" className="w-full" value={expandedItems} onValueChange={setExpandedItems}>
             <AccordionItem value="validation-mode">
               <AccordionTrigger>Validation Mode</AccordionTrigger>
               <AccordionContent>
@@ -190,7 +190,7 @@ export default function SimpleLogin() {
                 </div>
               </AccordionContent>
             </AccordionItem>
-          </Accordion>
+          </Accordion> */}
         </aside>
       </div>
       <main>
