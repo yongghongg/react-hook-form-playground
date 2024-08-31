@@ -1,51 +1,111 @@
 import { FormConfigType, ModeType, ReValidateMode } from '@/components/FormConfiguration/FormConfiguration.type';
+import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
+import { Slider } from '@/components/ui/slider';
+import { Switch } from '@/components/ui/switch';
 import { Settings2 } from 'lucide-react';
-import { Control, Controller, UseFormRegister } from 'react-hook-form';
+import React from 'react';
+import { Controller, ControllerRenderProps, UseFormReturn } from 'react-hook-form';
 
 interface FormConfigurationProps {
-  register: UseFormRegister<FormConfigType>;
-  control: Control<FormConfigType, any>;
+  methods: UseFormReturn<FormConfigType, any, undefined>;
 }
+
+interface SelectComponentProps {
+  name: string;
+  label: string;
+  items: string[];
+  field: ControllerRenderProps<FormConfigType, any>;
+}
+
+const SelectComponent: React.FC<SelectComponentProps> = ({ name, label, items, field }) => {
+  return (
+    <>
+      <Label>{label}</Label>
+      <Select onValueChange={field.onChange} value={field.value}>
+        <SelectTrigger className="">
+          <SelectValue placeholder={label} />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectGroup>
+            {items.map((item, index) => {
+              const id = `${name}-${index}`;
+              return (
+                <SelectItem key={id} value={item}>
+                  {item}
+                </SelectItem>
+              );
+            })}
+          </SelectGroup>
+        </SelectContent>
+      </Select>
+    </>
+  );
+};
 
 const validateModes: ModeType[] = ['onBlur', 'onChange', 'onSubmit', 'onTouched', 'all'];
 const reValidateModes: ReValidateMode[] = ['onBlur', 'onChange', 'onSubmit'];
 
-const FormConfiguration: React.FC<FormConfigurationProps> = ({ register, control }) => {
+const FormConfiguration: React.FC<FormConfigurationProps> = ({ methods }) => {
+  const { control, register } = methods;
   return (
     <>
       <div className="flex-center flex justify-between">
         <Settings2 />
         <h2>UseForm Configuration</h2>
       </div>
-      <Separator />
-      <div>
+      <Separator className="my-3" />
+      <div className="mb-4 flex flex-col gap-3">
         <Controller
           control={control}
           name="mode"
-          render={({ field }) => {
-            return (
-              <Select onValueChange={field.onChange} value={field.value}>
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Validation Mode" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup {...register('mode')}>
-                    {validateModes.map((mode, index) => {
-                      const id = `mode-${index}`;
-                      const displayMode = mode === 'onSubmit' ? `${mode} (default)` : mode;
-                      return (
-                        <SelectItem key={id} value={mode}>
-                          {displayMode}
-                        </SelectItem>
-                      );
-                    })}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            );
-          }}
+          render={({ field }) => (
+            <SelectComponent field={field} name="mode" label="Validation mode" items={validateModes} />
+          )}
+        />
+      </div>
+      <div className="mb-4 flex flex-col gap-3">
+        <Controller
+          control={control}
+          name="reValidateMode"
+          render={({ field }) => (
+            <SelectComponent field={field} name="reValidateMode" label="Re-validation mode" items={reValidateModes} />
+          )}
+        />
+      </div>
+      <div className="mb-4 flex flex-col gap-3">
+        <Controller
+          control={control}
+          name="shouldFocusError"
+          render={({ field }) => (
+            <>
+              <Label htmlFor="shouldFocusError">shouldFocusError</Label>
+              <Switch
+                {...register('shouldFocusError')}
+                id="shouldFocusError"
+                checked={field.value === true}
+                onCheckedChange={field.onChange}
+              />
+            </>
+          )}
+        />
+      </div>
+      <div className="mb-4 flex flex-col gap-3">
+        <Controller
+          control={control}
+          name="delayError"
+          render={({ field }) => (
+            <div>
+              <div className="mb-4 flex items-center justify-between">
+                <Label>delayError</Label>
+                <span>
+                  {field.value} {field.value == 0 ? 'millisecond' : 'milliseconds'}
+                </span>
+              </div>
+              <Slider min={0} max={10000} step={1000} onValueChange={field.onChange} />
+            </div>
+          )}
         />
       </div>
     </>

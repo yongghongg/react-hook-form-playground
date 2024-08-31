@@ -8,11 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { isNil } from 'lodash-es';
 import { useState } from 'react';
-import { SubmitHandler, ValidationMode, useForm } from 'react-hook-form';
-
-interface User {
-  email: string;
-}
+import { Control, SubmitHandler, ValidationMode, useForm, useWatch } from 'react-hook-form';
 
 interface LoginFormValues {
   email: string;
@@ -24,16 +20,15 @@ type ModeType = keyof ValidationMode;
 type ReValidateMode = Exclude<ModeType, 'onTouched' | 'all'>;
 
 interface SimpleLoginFormProps {
-  shouldFocusError: boolean;
   mode: ModeType;
   reValidateMode: ReValidateMode;
-  delayError: number;
+  control: Control<FormConfigType, any>;
 }
 
-// const Button = tw.button`w-full rounded border bg-blue-600 p-3 font-bold text-white transition-colors duration-300 hover:bg-blue-700`;
-
-const SimpleLoginForm: React.FC<SimpleLoginFormProps> = ({ shouldFocusError, mode, reValidateMode, delayError }) => {
+const SimpleLoginForm: React.FC<SimpleLoginFormProps> = ({ mode, reValidateMode, control }) => {
   const [result, setResult] = useState<LoginFormValues | null>(null);
+  const shouldFocusError = useWatch<FormConfigType, 'shouldFocusError'>({ control, name: 'shouldFocusError' });
+  const delayError = useWatch<FormConfigType, 'delayError'>({ control, name: 'delayError' });
   const {
     register,
     handleSubmit,
@@ -100,108 +95,35 @@ const SimpleLoginForm: React.FC<SimpleLoginFormProps> = ({ shouldFocusError, mod
   );
 };
 
-const validateModes: ModeType[] = ['onBlur', 'onChange', 'onSubmit', 'onTouched', 'all'];
-const reValidateModes: ReValidateMode[] = ['onBlur', 'onChange', 'onSubmit'];
-const configItems = ['validation-mode', 'revalidation-mode', 'should-focus-error', 'delayError'];
-
 export default function SimpleLogin() {
-  const [shouldFocusError, setShouldFocusError] = useState(true);
-  const [selectedMode, setSelectedMode] = useState<ModeType>('onSubmit');
-  const [selectedReValidationMode, setSelectedReValidationMode] = useState<ReValidateMode>('onSubmit');
-  const [delayError, setDelayError] = useState(0);
-  const [expandedItems, setExpandedItems] = useState<string[]>(configItems);
-  const { control, register, setValue, watch } = useForm<FormConfigType>({
+  const methods = useForm<FormConfigType>({
     defaultValues: {
-      mode: 'onSubmit', reValidateMode: 'onSubmit', delayError: 0, shouldFocusError: true
+      mode: 'onSubmit',
+      reValidateMode: 'onChange',
+      delayError: 0,
+      shouldFocusError: true
     }
   });
-
-  console.log(watch('mode'));
-
+  const { control } = methods;
+  const selectedMode = useWatch<FormConfigType, 'mode'>({ control, name: 'mode' });
+  const selectedReValidationMode = useWatch<FormConfigType, 'reValidateMode'>({ control, name: 'reValidateMode' });
   const uniqueKey = `${selectedMode}-${selectedReValidationMode}`;
 
   return (
-    <div className={styles.container}>
-      <div className="min-h-screen p-4 shadow-md max-lg:hidden">
-        <aside>
-          <FormConfiguration register={register} control={control} />
-          {/* <Accordion type="multiple" className="w-full" value={expandedItems} onValueChange={setExpandedItems}>
-            <AccordionItem value="validation-mode">
-              <AccordionTrigger>Validation Mode</AccordionTrigger>
-              <AccordionContent>
-                <RadioGroup defaultValue="onSubmit" onValueChange={(e) => setSelectedMode(e as ModeType)}>
-                  {validateModes.map((mode, index) => {
-                    const id = `mode-${index}`;
-                    const displayMode = mode === 'onSubmit' ? `${mode} (default)` : mode;
-                    return (
-                      <div key={id} className="flex items-center space-x-2">
-                        <RadioGroupItem value={mode} id={id} checked={selectedMode === mode} />
-                        <Label htmlFor={id}>{displayMode}</Label>
-                      </div>
-                    );
-                  })}
-                </RadioGroup>
-              </AccordionContent>
-            </AccordionItem>
-            <AccordionItem value="revalidation-mode">
-              <AccordionTrigger>Re-validation Mode</AccordionTrigger>
-              <AccordionContent>
-                <RadioGroup
-                  defaultValue="onSubmit"
-                  onValueChange={(e) => setSelectedReValidationMode(e as ReValidateMode)}
-                >
-                  {reValidateModes.map((mode, index) => {
-                    const id = `revalidate-mode-${index}`;
-                    const displayMode = mode === 'onChange' ? `${mode} (default)` : mode;
-                    return (
-                      <div key={id} className="flex items-center space-x-2">
-                        <RadioGroupItem value={mode} id={id} checked={selectedReValidationMode === mode} />
-                        <Label htmlFor={id}>{displayMode}</Label>
-                      </div>
-                    );
-                  })}
-                </RadioGroup>
-              </AccordionContent>
-            </AccordionItem>
-            <AccordionItem value="should-focus-error">
-              <AccordionTrigger>shouldFocusError</AccordionTrigger>
-              <AccordionContent className="flex items-center gap-2">
-                <Label htmlFor="shouldFocusError">shouldFocusError</Label>
-                <Switch
-                  id="shouldFocusError"
-                  checked={shouldFocusError === true}
-                  onCheckedChange={() => setShouldFocusError(!shouldFocusError)}
-                />
-              </AccordionContent>
-            </AccordionItem>
-            <AccordionItem value="delayError">
-              <AccordionTrigger>delayError</AccordionTrigger>
-              <AccordionContent>
-                <div>
-                  <div className="mb-3 flex items-center justify-center">
-                    <span>{delayError} milliseconds</span>
-                  </div>
-                  <Slider
-                    defaultValue={[delayError]}
-                    max={10000}
-                    step={1000}
-                    onValueChange={(val) => setDelayError(val[0])}
-                  />
-                </div>
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion> */}
+    <div className="flex justify-between">
+      <div className="w-1/4 min-h-screen p-4 shadow-md max-lg:hidden">
+        <aside className="sticky top-4">
+          <FormConfiguration methods={methods} />
         </aside>
       </div>
-      <main>
+      <main className="w-3/4 max-lg:w-full">
         {/* <nav>Header</nav> */}
-        <div className={styles.mainContent}>
+        <div className="my-12">
           <SimpleLoginForm
             key={uniqueKey}
-            shouldFocusError={shouldFocusError}
             mode={selectedMode}
             reValidateMode={selectedReValidationMode}
-            delayError={delayError}
+            control={control}
           />
         </div>
       </main>
