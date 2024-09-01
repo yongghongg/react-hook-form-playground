@@ -1,3 +1,5 @@
+import Footer from '@/components/layout/Footer';
+import Header from '@/components/layout/Headers';
 import StyledComponentsRegistry from '@/lib/registry';
 import { cn } from '@/lib/utils';
 import GlobalStyles from '@/styles/GlobalStyles';
@@ -18,14 +20,18 @@ export default function RootLayout({
   return (
     <html lang="en">
       <Head>
-        <title>Login</title>
-        <meta name="description" content="Login to your account" />
+        <title>react-hook-form examples</title>
+        <meta name="description" content="react-hook-form examples" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <body className={cn('min-h-screen bg-background font-sans antialiased')}>
         <StyledComponentsRegistry>
+          <div className="relative flex min-h-screen flex-col bg-background">
+            <Header />
+            {children}
+            <Footer />
+          </div>
           <GlobalStyles />
-          {children}
         </StyledComponentsRegistry>
       </body>
     </html>

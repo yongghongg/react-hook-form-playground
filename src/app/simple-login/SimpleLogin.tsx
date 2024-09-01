@@ -110,23 +110,28 @@ export default function SimpleLogin() {
   const uniqueKey = `${selectedMode}-${selectedReValidationMode}`;
 
   return (
-    <div className="flex justify-between">
-      <div className="w-1/4 min-h-screen p-4 shadow-md max-lg:hidden">
-        <aside className="sticky top-4">
-          <FormConfiguration methods={methods} />
-        </aside>
-      </div>
-      <main className="w-3/4 max-lg:w-full">
-        {/* <nav>Header</nav> */}
-        <div className="my-12">
-          <SimpleLoginForm
-            key={uniqueKey}
-            mode={selectedMode}
-            reValidateMode={selectedReValidationMode}
-            control={control}
-          />
+    <main className="flex-1">
+      <div className="border-b">
+        <div className="container flex-1 items-start md:grid md:grid-cols-[220px_minmax(0,1fr)] md:gap-6 lg:grid-cols-[240px_minmax(0,1fr)] lg:gap-10">
+          <aside className="fixed top-14 z-30 -ml-2 hidden h-[calc(100vh-3.5rem)] w-full shrink-0 md:sticky md:block">
+            <div className="relative h-full pt-4 pl-2 lg:pt-8">
+              <div className="h-full w-full rounded-[inherit]">
+                <FormConfiguration methods={methods} />
+              </div>
+            </div>
+          </aside>
+          <main className="relative py-4 lg:gap-10 lg:py-6 xl:grid">
+            <div className="my-12">
+              <SimpleLoginForm
+                key={uniqueKey}
+                mode={selectedMode}
+                reValidateMode={selectedReValidationMode}
+                control={control}
+              />
+            </div>
+          </main>
         </div>
-      </main>
-    </div>
+      </div>
+    </main>
   );
 }

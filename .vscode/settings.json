@@ -19,7 +19,7 @@
     "titleBar.inactiveForeground": "#15202b99"
   },
   "peacock.color": "#61dafb",
-  "cSpell.words": ["clsx", "lucide"],
+  "cSpell.words": ["clsx", "lucide", "rhfe"],
   "css.customData": [".vscode/tailwind.json"],
   "editor.codeActionsOnSave": {
     "source.organizeImports": "explicit",

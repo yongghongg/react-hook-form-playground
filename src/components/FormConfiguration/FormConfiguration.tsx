@@ -50,10 +50,10 @@ const reValidateModes: ReValidateMode[] = ['onBlur', 'onChange', 'onSubmit'];
 const FormConfiguration: React.FC<FormConfigurationProps> = ({ methods }) => {
   const { control, register } = methods;
   return (
-    <>
+    <div>
       <div className="flex-center flex justify-between">
+        <h2>useForm Configuration</h2>
         <Settings2 />
-        <h2>UseForm Configuration</h2>
       </div>
       <Separator className="my-3" />
       <div className="mb-4 flex flex-col gap-3">
@@ -108,7 +108,7 @@ const FormConfiguration: React.FC<FormConfigurationProps> = ({ methods }) => {
           )}
         />
       </div>
-    </>
+    </div>
   );
 };
 
