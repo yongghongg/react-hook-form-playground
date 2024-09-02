@@ -1,6 +1,6 @@
 'use client';
 
-import styles from '@/app/simple-login/SimpleLogin.module.css';
+import styles from '@/app/examples/simple-login/SimpleLogin.module.css';
 import FormConfiguration from '@/components/FormConfiguration/FormConfiguration';
 import { FormConfigType } from '@/components/FormConfiguration/FormConfiguration.type';
 import TextField from '@/components/TextField/TextField';
