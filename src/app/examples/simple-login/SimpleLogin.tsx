@@ -1,10 +1,10 @@
 'use client';
 
-import styles from '@/app/examples/simple-login/SimpleLogin.module.css';
 import FormConfiguration from '@/components/FormConfiguration/FormConfiguration';
 import { FormConfigType } from '@/components/FormConfiguration/FormConfiguration.type';
 import TextField from '@/components/TextField/TextField';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { isNil } from 'lodash-es';
 import { useState } from 'react';
@@ -46,52 +46,67 @@ const SimpleLoginForm: React.FC<SimpleLoginFormProps> = ({ mode, reValidateMode,
   if (result) {
     return (
       <>
-        <div className={styles.greeting}>Email: {result.email}</div>
-        <div className={styles.greeting}>Password: {result.password}</div>
-        <div className={styles.greeting}>Remember me: {result.remember}</div>
-        <button onClick={onBack}>Back</button>
+        <div className="mb-6 flex flex-col gap-6">
+          <div className="text-xl font-bold">Email: {result.email}</div>
+          <div className="text-xl font-bold">Password: {result.password}</div>
+          <div className="text-xl font-bold">Remember me: {result.remember}</div>
+        </div>
+        <Button className="font-bold" size="lg" onClick={onBack}>
+          Back
+        </Button>
       </>
     );
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
-      <h2 className={styles.header}>Login</h2>
-      <TextField
-        fieldName="email"
-        label="Email"
-        showError={!isNil(errors.email)}
-        errorMessage={errors.email?.message}
-        {...register('email', {
-          required: 'Email is required',
-          pattern: {
-            value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
-            message: 'Invalid email address'
-          }
-        })}
-      />
-      <TextField
-        fieldName="password"
-        type="password"
-        label="Password"
-        showError={!isNil(errors.password)}
-        errorMessage={errors.password?.message}
-        {...register('password', {
-          required: 'Password is required',
-          minLength: {
-            value: 6,
-            message: 'Password must be at least 6 characters'
-          }
-        })}
-      />
-      <div className={styles.rememberMe}>
-        <Checkbox id="remember" {...register('remember')} />
-        <label htmlFor="remember">Remember me</label>
-      </div>
-      <Button className="w-full font-bold" type="submit" size="lg">
-        Login
-      </Button>
-    </form>
+    <Card>
+      <CardHeader className="text-center">
+        <CardTitle>Login</CardTitle>
+        <CardDescription>A simple login form</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <TextField
+            fieldName="email"
+            label="Email"
+            showError={!isNil(errors.email)}
+            errorMessage={errors.email?.message}
+            {...register('email', {
+              required: 'Email is required',
+              pattern: {
+                value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+                message: 'Invalid email address'
+              }
+            })}
+          />
+          <TextField
+            fieldName="password"
+            type="password"
+            label="Password"
+            showError={!isNil(errors.password)}
+            errorMessage={errors.password?.message}
+            {...register('password', {
+              required: 'Password is required',
+              minLength: {
+                value: 6,
+                message: 'Password must be at least 6 characters'
+              }
+            })}
+          />
+          <div className="flex items-center gap-2">
+            <Checkbox id="remember" {...register('remember')} />
+            <label className="text-sm" htmlFor="remember">
+              Remember me
+            </label>
+          </div>
+        </form>
+      </CardContent>
+      <CardFooter>
+        <Button className="w-full font-bold" type="submit" size="lg">
+          Login
+        </Button>
+      </CardFooter>
+    </Card>
   );
 };
 
@@ -112,16 +127,16 @@ export default function SimpleLogin() {
   return (
     <main className="flex-1">
       <div className="border-b">
-        <div className="container flex-1 items-start md:grid md:grid-cols-[220px_minmax(0,1fr)] md:gap-6 lg:grid-cols-[240px_minmax(0,1fr)] lg:gap-10">
+        <div className="container flex-1 items-start md:grid md:grid-cols-[250px_minmax(0,1fr)] md:gap-6 lg:grid-cols-[270px_minmax(0,1fr)] lg:gap-10">
           <aside className="fixed top-14 z-30 -ml-2 hidden h-[calc(100vh-3.5rem)] w-full shrink-0 md:sticky md:block">
-            <div className="relative h-full pt-4 pl-2 lg:pt-8">
+            <div className="relative h-full pl-2 pr-8 pt-4 lg:pt-8">
               <div className="h-full w-full rounded-[inherit]">
                 <FormConfiguration methods={methods} />
               </div>
             </div>
           </aside>
-          <main className="relative py-4 lg:gap-10 lg:py-6 xl:grid">
-            <div className="my-12">
+          <main className="relative py-4 lg:gap-10 lg:py-6">
+            <div className="mx-auto my-12 max-w-sm">
               <SimpleLoginForm
                 key={uniqueKey}
                 mode={selectedMode}

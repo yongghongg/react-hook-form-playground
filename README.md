@@ -49,4 +49,5 @@ To provide real-life examples of forms created by react-hook-form (RHF)
 
 ## Things to do
 
+- [ ] Beautify not-found page (https://authjs.dev/guides/providers/credentials#options)
 - [ ] Add unit tests
