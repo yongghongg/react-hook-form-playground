@@ -38,7 +38,8 @@ To provide real-life examples of forms created by react-hook-form (RHF)
 ## Configuration feature
 
 1. Add reset to default
-2. Show form values like: formState, fieldState, error etc
+2. Show form values like: formState, fieldState, error, etc
+3. Add action like resetField, trigger, setError, etc
 
 ## React-hook-form functions to cover
 
