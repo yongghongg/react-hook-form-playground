@@ -26,7 +26,7 @@ export default function RootLayout({
       </Head>
       <body className={cn('min-h-screen bg-background font-sans antialiased')}>
         <StyledComponentsRegistry>
-          <div className="relative flex min-h-screen flex-col bg-background">
+          <div className="relative flex flex-col bg-background">
             <Header />
             {children}
             <Footer />

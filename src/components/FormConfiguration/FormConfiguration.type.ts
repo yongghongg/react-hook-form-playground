@@ -8,4 +8,5 @@ export interface FormConfigType {
   mode: ModeType;
   reValidateMode: ReValidateMode;
   delayError: number;
+  disabled: boolean;
 }

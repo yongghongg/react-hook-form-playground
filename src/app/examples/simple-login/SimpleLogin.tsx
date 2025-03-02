@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Checkbox } from '@/components/ui/checkbox';
 import { isNil } from 'lodash-es';
 import { useState } from 'react';
-import { Control, SubmitHandler, ValidationMode, useForm, useWatch } from 'react-hook-form';
+import { Control, Controller, SubmitHandler, ValidationMode, useForm, useWatch } from 'react-hook-form';
 
 interface LoginFormValues {
   email: string;
@@ -23,19 +23,41 @@ interface SimpleLoginFormProps {
   mode: ModeType;
   reValidateMode: ReValidateMode;
   control: Control<FormConfigType, any>;
+  disabled: boolean;
 }
 
-const SimpleLoginForm: React.FC<SimpleLoginFormProps> = ({ mode, reValidateMode, control }) => {
+const SimpleLoginForm: React.FC<SimpleLoginFormProps> = ({
+  mode,
+  reValidateMode,
+  control: formConfigControl,
+  disabled
+}) => {
   const [result, setResult] = useState<LoginFormValues | null>(null);
-  const shouldFocusError = useWatch<FormConfigType, 'shouldFocusError'>({ control, name: 'shouldFocusError' });
-  const delayError = useWatch<FormConfigType, 'delayError'>({ control, name: 'delayError' });
+  const shouldFocusError = useWatch<FormConfigType, 'shouldFocusError'>({
+    control: formConfigControl,
+    name: 'shouldFocusError'
+  });
+  const delayError = useWatch<FormConfigType, 'delayError'>({ control: formConfigControl, name: 'delayError' });
   const {
+    control,
     register,
     handleSubmit,
     formState: { errors }
-  } = useForm<LoginFormValues>({ shouldFocusError, mode, reValidateMode, delayError });
+  } = useForm<LoginFormValues>({
+    shouldFocusError,
+    mode,
+    reValidateMode,
+    delayError,
+    disabled,
+    defaultValues: { email: '', password: '', remember: false }
+  });
+  // console.log('🚀 ~ isDirty:', isDirty);
+  // console.log('🚀 ~ dirtyFields:', dirtyFields);
+  // console.log('🚀 ~ touchedFields:', touchedFields);
+  // console.log('🚀 ~ submitCount:', submitCount);
 
-  const onSubmit: SubmitHandler<LoginFormValues> = ({ email, password, remember }) => {
+  const onSubmit: SubmitHandler<LoginFormValues> = (data) => {
+    const { email, password, remember } = data;
     setResult({ email, password, remember });
   };
 
@@ -60,12 +82,12 @@ const SimpleLoginForm: React.FC<SimpleLoginFormProps> = ({ mode, reValidateMode,
 
   return (
     <Card>
-      <CardHeader className="text-center">
-        <CardTitle>Login</CardTitle>
-        <CardDescription>A simple login form</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <CardHeader className="text-center">
+          <CardTitle>Login</CardTitle>
+          <CardDescription>A simple login form</CardDescription>
+        </CardHeader>
+        <CardContent>
           <TextField
             fieldName="email"
             label="Email"
@@ -94,18 +116,31 @@ const SimpleLoginForm: React.FC<SimpleLoginFormProps> = ({ mode, reValidateMode,
             })}
           />
           <div className="flex items-center gap-2">
-            <Checkbox id="remember" {...register('remember')} />
-            <label className="text-sm" htmlFor="remember">
-              Remember me
-            </label>
+            <Controller
+              control={control}
+              name="remember"
+              render={({ field }) => (
+                <>
+                  <Checkbox
+                    id="remember"
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                    disabled={field.disabled}
+                  />
+                  <label className="text-sm" htmlFor="remember">
+                    Remember me
+                  </label>
+                </>
+              )}
+            />
           </div>
-        </form>
-      </CardContent>
-      <CardFooter>
-        <Button className="w-full font-bold" type="submit" size="lg">
-          Login
-        </Button>
-      </CardFooter>
+        </CardContent>
+        <CardFooter>
+          <Button className="w-full font-bold" type="submit" size="lg">
+            Login
+          </Button>
+        </CardFooter>
+      </form>
     </Card>
   );
 };
@@ -116,13 +151,15 @@ export default function SimpleLogin() {
       mode: 'onSubmit',
       reValidateMode: 'onChange',
       delayError: 0,
-      shouldFocusError: true
+      shouldFocusError: true,
+      disabled: false
     }
   });
-  const { control } = methods;
-  const selectedMode = useWatch<FormConfigType, 'mode'>({ control, name: 'mode' });
-  const selectedReValidationMode = useWatch<FormConfigType, 'reValidateMode'>({ control, name: 'reValidateMode' });
-  const uniqueKey = `${selectedMode}-${selectedReValidationMode}`;
+  const { control, watch } = methods;
+  const selectedMode = watch('mode');
+  const selectedReValidationMode = watch('reValidateMode');
+  const disabledInput = watch('disabled');
+  const uniqueKey = `${selectedMode}-${selectedReValidationMode}-${disabledInput}`;
 
   return (
     <div className="border-b">
@@ -141,6 +178,7 @@ export default function SimpleLogin() {
               mode={selectedMode}
               reValidateMode={selectedReValidationMode}
               control={control}
+              disabled={disabledInput}
             />
           </div>
         </main>

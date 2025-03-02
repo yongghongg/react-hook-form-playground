@@ -4,7 +4,8 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import { Separator } from '@/components/ui/separator';
 import { Slider } from '@/components/ui/slider';
 import { Switch } from '@/components/ui/switch';
-import { Settings2 } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Info, Settings2 } from 'lucide-react';
 import React from 'react';
 import { Controller, ControllerRenderProps, UseFormReturn } from 'react-hook-form';
 
@@ -22,7 +23,21 @@ interface SelectComponentProps {
 const SelectComponent: React.FC<SelectComponentProps> = ({ name, label, items, field }) => {
   return (
     <>
-      <Label>{label}</Label>
+      <div className="flex items-center gap-2">
+        <Label>{label}</Label>
+        <TooltipProvider delayDuration={300}>
+          <Tooltip>
+            <TooltipTrigger>
+              <Info size={18} />
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>
+                Validation strategy <strong>before</strong> submitting behavior.{' '}
+              </p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      </div>
       <Select onValueChange={field.onChange} value={field.value}>
         <SelectTrigger className="">
           <SelectValue placeholder={label} />
@@ -48,7 +63,7 @@ const validateModes: ModeType[] = ['onBlur', 'onChange', 'onSubmit', 'onTouched'
 const reValidateModes: ReValidateMode[] = ['onBlur', 'onChange', 'onSubmit'];
 
 const FormConfiguration: React.FC<FormConfigurationProps> = ({ methods }) => {
-  const { control, register } = methods;
+  const { control } = methods;
   return (
     <div>
       <div className="flex-center flex justify-between">
@@ -81,12 +96,7 @@ const FormConfiguration: React.FC<FormConfigurationProps> = ({ methods }) => {
           render={({ field }) => (
             <>
               <Label htmlFor="shouldFocusError">shouldFocusError</Label>
-              <Switch
-                {...register('shouldFocusError')}
-                id="shouldFocusError"
-                checked={field.value === true}
-                onCheckedChange={field.onChange}
-              />
+              <Switch id="shouldFocusError" checked={field.value === true} onCheckedChange={field.onChange} />
             </>
           )}
         />
@@ -105,6 +115,18 @@ const FormConfiguration: React.FC<FormConfigurationProps> = ({ methods }) => {
               </div>
               <Slider min={0} max={10000} step={1000} onValueChange={field.onChange} />
             </div>
+          )}
+        />
+      </div>
+      <div className="mb-4 flex flex-col gap-3">
+        <Controller
+          control={control}
+          name="disabled"
+          render={({ field }) => (
+            <>
+              <Label htmlFor="disabled">disabled</Label>
+              <Switch id="disabled" checked={field.value === true} onCheckedChange={field.onChange} />
+            </>
           )}
         />
       </div>
