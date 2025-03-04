@@ -11,6 +11,7 @@ const Header: React.FC = () => {
             <Shapes />
             <span>rhfe</span>
           </Link>
+          <Link href="/playground">Playground</Link>
           <Link href="/examples">Examples</Link>
         </div>
         <Link href="https://github.com/yongghongg" target="_blank">

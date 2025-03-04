@@ -6,7 +6,9 @@ import TextField from '@/components/TextField/TextField';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { isNil } from 'lodash-es';
+import { Settings2 } from 'lucide-react';
 import { useState } from 'react';
 import { Control, Controller, SubmitHandler, ValidationMode, useForm, useWatch } from 'react-hook-form';
 
@@ -141,7 +143,7 @@ const SimpleLoginForm: React.FC<SimpleLoginFormProps> = ({
   );
 };
 
-export default function SimpleLogin() {
+export default function Playground() {
   const methods = useForm<FormConfigType>({
     defaultValues: {
       mode: 'onSubmit',
@@ -155,18 +157,34 @@ export default function SimpleLogin() {
   const selectedMode = watch('mode');
   const selectedReValidationMode = watch('reValidateMode');
   const disabledInput = watch('disabled');
-  const uniqueKey = `${selectedMode}-${selectedReValidationMode}-${disabledInput}`;
+  const uniqueKey = `${selectedMode}-${selectedReValidationMode}`;
+
+  const [isSideBarOpen, setIsSideBarOpen] = useState(false);
+
+  const Aside = () => (
+    <div className="h-full overflow-auto px-2 pt-4 lg:pt-8">
+      <div className="h-full w-full rounded-[inherit]">
+        <FormConfiguration methods={methods} />
+      </div>
+    </div>
+  );
 
   return (
-    <div className="border-b">
+    <div>
       <div className="container flex-1 items-start md:grid md:grid-cols-[250px_minmax(0,1fr)] md:gap-6 lg:grid-cols-[270px_minmax(0,1fr)] lg:gap-10">
         <aside className="fixed top-14 z-30 -ml-2 hidden h-[calc(100vh-3.5rem)] w-full shrink-0 md:sticky md:block">
-          <div className="relative h-full pl-2 pr-8 pt-4 lg:pt-8">
-            <div className="h-full w-full rounded-[inherit]">
-              <FormConfiguration methods={methods} />
-            </div>
-          </div>
+          <Aside />
         </aside>
+        <Sheet>
+          <SheetTrigger asChild className="fixed left-6 top-16 z-10 md:hidden">
+            <Button variant="ghost" size="icon" className="[&_svg]:size-6">
+              <Settings2 />
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="left" className="p-8">
+            <Aside />
+          </SheetContent>
+        </Sheet>
         <main className="relative py-4 lg:gap-10 lg:py-6">
           <div className="mx-auto my-12 max-w-sm">
             <SimpleLoginForm

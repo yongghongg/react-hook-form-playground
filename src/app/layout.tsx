@@ -2,7 +2,6 @@ import Footer from '@/components/layout/Footer';
 import Header from '@/components/layout/Headers';
 import StyledComponentsRegistry from '@/lib/registry';
 import { cn } from '@/lib/utils';
-import GlobalStyles from '@/styles/GlobalStyles';
 import type { Metadata } from 'next';
 import Head from 'next/head';
 import './globals.css';
@@ -20,7 +19,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <Head>
-        <title>react-hook-form examples</title>
+        <title>react-hook-form playground</title>
         <meta name="description" content="react-hook-form examples" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
@@ -31,7 +30,6 @@ export default function RootLayout({
             {children}
             <Footer />
           </div>
-          <GlobalStyles />
         </StyledComponentsRegistry>
       </body>
     </html>

@@ -113,7 +113,7 @@ const FormConfiguration: React.FC<FormConfigurationProps> = ({ methods }) => {
                   {field.value} {field.value == 0 ? 'millisecond' : 'milliseconds'}
                 </span>
               </div>
-              <Slider min={0} max={10000} step={1000} onValueChange={field.onChange} />
+              <Slider value={[field.value]} min={0} max={10000} step={1000} onValueChange={field.onChange} />
             </div>
           )}
         />
