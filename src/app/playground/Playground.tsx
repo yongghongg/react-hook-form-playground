@@ -159,8 +159,6 @@ export default function Playground() {
   const disabledInput = watch('disabled');
   const uniqueKey = `${selectedMode}-${selectedReValidationMode}`;
 
-  const [isSideBarOpen, setIsSideBarOpen] = useState(false);
-
   const Aside = () => (
     <div className="h-full overflow-auto px-2 pt-4 lg:pt-8">
       <div className="h-full w-full rounded-[inherit]">
