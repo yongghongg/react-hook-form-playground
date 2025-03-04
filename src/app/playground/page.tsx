@@ -2,8 +2,8 @@ import Playground from '@/app/playground/Playground';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  description: 'Form Examples',
-  title: 'Form Examples'
+  description: 'React Hook Form Playground',
+  title: 'React Hook Form Playground'
 };
 
 export default function PlaygroundPage() {
