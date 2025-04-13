@@ -3,14 +3,15 @@
 import FormConfiguration from '@/components/FormConfiguration/FormConfiguration';
 import { FormConfigType } from '@/components/FormConfiguration/FormConfiguration.type';
 import TextField from '@/components/TextField/TextField';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { isNil } from 'lodash-es';
+import { isEmpty, isNil } from 'lodash-es';
 import { Settings2 } from 'lucide-react';
-import { useState } from 'react';
-import { Control, Controller, SubmitHandler, ValidationMode, useForm, useWatch } from 'react-hook-form';
+import { useCallback, useState } from 'react';
+import { Control, Controller, SubmitHandler, useForm, useWatch } from 'react-hook-form';
 
 interface LoginFormValues {
   email: string;
@@ -18,33 +19,24 @@ interface LoginFormValues {
   remember: boolean;
 }
 
-type ModeType = keyof ValidationMode;
-type ReValidateMode = Exclude<ModeType, 'onTouched' | 'all'>;
-
 interface SimpleLoginFormProps {
-  mode: ModeType;
-  reValidateMode: ReValidateMode;
-  control: Control<FormConfigType, any>;
-  disabled: boolean;
+  control: Control<FormConfigType>;
 }
 
-const SimpleLoginForm: React.FC<SimpleLoginFormProps> = ({
-  mode,
-  reValidateMode,
-  control: formConfigControl,
-  disabled
-}) => {
+const SimpleLoginForm: React.FC<SimpleLoginFormProps> = ({ control: formConfigControl }) => {
   const [result, setResult] = useState<LoginFormValues | null>(null);
-  const shouldFocusError = useWatch<FormConfigType, 'shouldFocusError'>({
+  const [mode, reValidateMode, showState, shouldFocusError, delayError, disabled] = useWatch<
+    FormConfigType,
+    ['mode', 'reValidateMode', 'showState', 'shouldFocusError', 'delayError', 'disabled']
+  >({
     control: formConfigControl,
-    name: 'shouldFocusError'
+    name: ['mode', 'reValidateMode', 'showState', 'shouldFocusError', 'delayError', 'disabled']
   });
-  const delayError = useWatch<FormConfigType, 'delayError'>({ control: formConfigControl, name: 'delayError' });
   const {
     control,
     register,
     handleSubmit,
-    formState: { errors }
+    formState: { errors, touchedFields, dirtyFields, isDirty, isValid, submitCount }
   } = useForm<LoginFormValues>({
     shouldFocusError,
     mode,
@@ -59,9 +51,9 @@ const SimpleLoginForm: React.FC<SimpleLoginFormProps> = ({
     setResult({ email, password, remember });
   };
 
-  const onBack = () => {
+  const onBack = useCallback(() => {
     setResult(null);
-  };
+  }, []);
 
   if (result) {
     return (
@@ -69,7 +61,7 @@ const SimpleLoginForm: React.FC<SimpleLoginFormProps> = ({
         <div className="mb-6 flex flex-col gap-6">
           <div className="text-xl font-bold">Email: {result.email}</div>
           <div className="text-xl font-bold">Password: {result.password}</div>
-          <div className="text-xl font-bold">Remember me: {result.remember}</div>
+          <div className="text-xl font-bold">Remember me: {result.remember.toString()}</div>
         </div>
         <Button className="font-bold" size="lg" onClick={onBack}>
           Back
@@ -84,11 +76,20 @@ const SimpleLoginForm: React.FC<SimpleLoginFormProps> = ({
         <CardHeader className="text-center">
           <CardTitle>Login</CardTitle>
           <CardDescription>A simple login form</CardDescription>
+          <div className="flex items-center justify-center gap-2">
+            {showState && <Badge variant={isDirty ? 'default' : 'outline'}>isDirty</Badge>}
+            {showState && <Badge variant={isValid ? 'success' : 'outline'}>isValid</Badge>}
+            {showState && <Badge variant={!isEmpty(errors) ? 'destructive' : 'outline'}>errors</Badge>}
+            {showState && <Badge variant="outline">submitCount: {submitCount}</Badge>}
+          </div>
         </CardHeader>
         <CardContent>
           <TextField
             fieldName="email"
             label="Email"
+            showState={showState}
+            dirty={dirtyFields.email}
+            touched={touchedFields.email}
             showError={!isNil(errors.email)}
             errorMessage={errors.email?.message}
             {...register('email', {
@@ -103,6 +104,9 @@ const SimpleLoginForm: React.FC<SimpleLoginFormProps> = ({
             fieldName="password"
             type="password"
             label="Password"
+            showState={showState}
+            dirty={dirtyFields.password}
+            touched={touchedFields.password}
             showError={!isNil(errors.password)}
             errorMessage={errors.password?.message}
             {...register('password', {
@@ -150,13 +154,13 @@ export default function Playground() {
       reValidateMode: 'onChange',
       delayError: 0,
       shouldFocusError: true,
-      disabled: false
+      disabled: false,
+      showState: true
     }
   });
   const { control, watch } = methods;
   const selectedMode = watch('mode');
   const selectedReValidationMode = watch('reValidateMode');
-  const disabledInput = watch('disabled');
   const uniqueKey = `${selectedMode}-${selectedReValidationMode}`;
 
   const Aside = () => (
@@ -168,33 +172,25 @@ export default function Playground() {
   );
 
   return (
-    <div>
-      <div className="container flex-1 items-start md:grid md:grid-cols-[250px_minmax(0,1fr)] md:gap-6 lg:grid-cols-[270px_minmax(0,1fr)] lg:gap-10">
-        <aside className="fixed top-14 z-30 -ml-2 hidden h-[calc(100vh-3.5rem)] w-full shrink-0 md:sticky md:block">
+    <div className="container flex-1 items-start md:grid md:grid-cols-[250px_minmax(0,1fr)] md:gap-6 lg:grid-cols-[270px_minmax(0,1fr)] lg:gap-10">
+      <aside className="fixed top-14 z-30 -ml-2 hidden h-[calc(100vh-3.5rem)] w-full shrink-0 md:sticky md:block">
+        <Aside />
+      </aside>
+      <Sheet>
+        <SheetTrigger asChild className="fixed left-6 top-16 z-10 md:hidden">
+          <Button variant="ghost" size="icon" className="[&_svg]:size-6">
+            <Settings2 />
+          </Button>
+        </SheetTrigger>
+        <SheetContent side="left" className="p-8">
           <Aside />
-        </aside>
-        <Sheet>
-          <SheetTrigger asChild className="fixed left-6 top-16 z-10 md:hidden">
-            <Button variant="ghost" size="icon" className="[&_svg]:size-6">
-              <Settings2 />
-            </Button>
-          </SheetTrigger>
-          <SheetContent side="left" className="p-8">
-            <Aside />
-          </SheetContent>
-        </Sheet>
-        <main className="relative py-4 lg:gap-10 lg:py-6">
-          <div className="mx-auto my-12 max-w-sm">
-            <SimpleLoginForm
-              key={uniqueKey}
-              mode={selectedMode}
-              reValidateMode={selectedReValidationMode}
-              control={control}
-              disabled={disabledInput}
-            />
-          </div>
-        </main>
-      </div>
+        </SheetContent>
+      </Sheet>
+      <main className="relative py-4 lg:gap-10 lg:py-6">
+        <div className="mx-auto my-12 max-w-sm">
+          <SimpleLoginForm key={uniqueKey} control={control} />
+        </div>
+      </main>
     </div>
   );
 }

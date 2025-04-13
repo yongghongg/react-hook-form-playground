@@ -5,20 +5,24 @@ import Link from 'next/link';
 const Header: React.FC = () => {
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-14 max-w-screen-2xl items-center justify-between">
-        <div className="flex gap-6">
+      <nav className="container flex h-14 max-w-screen-2xl items-center justify-between">
+        <div className="flex gap-8">
           <Link href="/" className="flex gap-1">
             <Shapes />
-            <span>rhfe</span>
+            <span>RHF Playground</span>
           </Link>
-          <Link href="/playground">Playground</Link>
-          <Link href="/examples">Examples</Link>
+          <Link className="hover:underline hover:underline-offset-4" href="/playground">
+            Playground
+          </Link>
+          <Link className="hover:underline hover:underline-offset-4" href="/examples">
+            Examples
+          </Link>
         </div>
         <Link href="https://github.com/yongghongg" target="_blank">
-          <GitHubLogoIcon />
+          <GitHubLogoIcon height={20} width={20} />
           <span className="sr-only">Github Logo</span>
         </Link>
-      </div>
+      </nav>
     </header>
   );
 };

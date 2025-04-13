@@ -1,12 +1,12 @@
 import { FormConfigType, ModeType, ReValidateMode } from '@/components/FormConfiguration/FormConfiguration.type';
+import { Tooltip } from '@/components/Tooltip';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
 import { Slider } from '@/components/ui/slider';
 import { Switch } from '@/components/ui/switch';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { Info, Settings2 } from 'lucide-react';
-import React from 'react';
+import { Settings2 } from 'lucide-react';
+import React, { ReactNode } from 'react';
 import { Controller, ControllerRenderProps, UseFormReturn } from 'react-hook-form';
 
 interface FormConfigurationProps {
@@ -18,25 +18,15 @@ interface SelectComponentProps {
   label: string;
   items: string[];
   field: ControllerRenderProps<FormConfigType, any>;
+  tooltip?: ReactNode;
 }
 
-const SelectComponent: React.FC<SelectComponentProps> = ({ name, label, items, field }) => {
+const SelectComponent: React.FC<SelectComponentProps> = ({ name, label, items, field, tooltip }) => {
   return (
     <>
       <div className="flex items-center gap-2">
         <Label>{label}</Label>
-        <TooltipProvider delayDuration={300}>
-          <Tooltip>
-            <TooltipTrigger>
-              <Info size={18} />
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>
-                Validation strategy <strong>before</strong> submitting behavior.{' '}
-              </p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+        {tooltip && <Tooltip content={tooltip} />}
       </div>
       <Select onValueChange={field.onChange} value={field.value}>
         <SelectTrigger className="">
@@ -65,9 +55,9 @@ const reValidateModes: ReValidateMode[] = ['onBlur', 'onChange', 'onSubmit'];
 const FormConfiguration: React.FC<FormConfigurationProps> = ({ methods }) => {
   const { control } = methods;
   return (
-    <div>
+    <div className="mb-8">
       <div className="flex-center flex justify-between">
-        <h2>useForm Configuration</h2>
+        <h2 className="font-bold">useForm Configuration</h2>
         <Settings2 />
       </div>
       <Separator className="my-3" />
@@ -76,7 +66,17 @@ const FormConfiguration: React.FC<FormConfigurationProps> = ({ methods }) => {
           control={control}
           name="mode"
           render={({ field }) => (
-            <SelectComponent field={field} name="mode" label="Validation mode" items={validateModes} />
+            <SelectComponent
+              field={field}
+              name="mode"
+              label="mode"
+              items={validateModes}
+              tooltip={
+                <p>
+                  Validation strategy <strong>before</strong> submitting behavior.
+                </p>
+              }
+            />
           )}
         />
       </div>
@@ -85,7 +85,17 @@ const FormConfiguration: React.FC<FormConfigurationProps> = ({ methods }) => {
           control={control}
           name="reValidateMode"
           render={({ field }) => (
-            <SelectComponent field={field} name="reValidateMode" label="Re-validation mode" items={reValidateModes} />
+            <SelectComponent
+              field={field}
+              name="reValidateMode"
+              label="reValidateMode"
+              items={reValidateModes}
+              tooltip={
+                <p>
+                  Validation strategy <strong>after</strong> submitting behavior.
+                </p>
+              }
+            />
           )}
         />
       </div>
@@ -95,7 +105,10 @@ const FormConfiguration: React.FC<FormConfigurationProps> = ({ methods }) => {
           name="shouldFocusError"
           render={({ field }) => (
             <>
-              <Label htmlFor="shouldFocusError">shouldFocusError</Label>
+              <div className="flex items-center gap-2">
+                <Label htmlFor="shouldFocusError">shouldFocusError</Label>
+                <Tooltip content="Enable or disable built-in focus management." />
+              </div>
               <Switch id="shouldFocusError" checked={field.value === true} onCheckedChange={field.onChange} />
             </>
           )}
@@ -107,13 +120,16 @@ const FormConfiguration: React.FC<FormConfigurationProps> = ({ methods }) => {
           name="delayError"
           render={({ field }) => (
             <div>
-              <div className="mb-4 flex items-center justify-between">
-                <Label>delayError</Label>
-                <span>
-                  {field.value} {field.value == 0 ? 'millisecond' : 'milliseconds'}
-                </span>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Label>delayError</Label>
+                  <Tooltip content="Delay error from appearing instantly (in ms)." />
+                </div>
               </div>
-              <Slider value={[field.value]} min={0} max={10000} step={1000} onValueChange={field.onChange} />
+              <div className="flex flex-col items-end gap-2">
+                <span>{field.value} ms</span>
+                <Slider value={[field.value]} min={0} max={10000} step={1000} onValueChange={field.onChange} />
+              </div>
             </div>
           )}
         />
@@ -124,8 +140,26 @@ const FormConfiguration: React.FC<FormConfigurationProps> = ({ methods }) => {
           name="disabled"
           render={({ field }) => (
             <>
-              <Label htmlFor="disabled">disabled</Label>
+              <div className="flex items-center gap-2">
+                <Label htmlFor="disabled">disabled</Label>
+                <Tooltip content="Disable the entire form with all associated inputs." />
+              </div>
               <Switch id="disabled" checked={field.value === true} onCheckedChange={field.onChange} />
+            </>
+          )}
+        />
+      </div>
+      <div className="mb-4 flex flex-col gap-3">
+        <Controller
+          control={control}
+          name="showState"
+          render={({ field }) => (
+            <>
+              <div className="flex items-center gap-2">
+                <Label htmlFor="showState">Show State</Label>
+                <Tooltip content="Show form and field state (not part of React Hook Form)." />
+              </div>
+              <Switch id="showState" checked={field.value === true} onCheckedChange={field.onChange} />
             </>
           )}
         />
