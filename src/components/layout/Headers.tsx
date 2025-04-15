@@ -18,7 +18,7 @@ const Header: React.FC = () => {
             Examples
           </Link>
         </div>
-        <Link href="https://github.com/yongghongg" target="_blank">
+        <Link href="https://github.com/yongghongg/react-hook-form-playground" target="_blank">
           <GitHubLogoIcon height={20} width={20} />
           <span className="sr-only">Github Logo</span>
         </Link>
