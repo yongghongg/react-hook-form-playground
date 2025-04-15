@@ -24,7 +24,7 @@ interface SelectComponentProps {
 const SelectComponent: React.FC<SelectComponentProps> = ({ name, label, items, field, tooltip }) => {
   return (
     <>
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1">
         <Label>{label}</Label>
         {tooltip && <Tooltip content={tooltip} />}
       </div>
@@ -61,7 +61,7 @@ const FormConfiguration: React.FC<FormConfigurationProps> = ({ methods }) => {
         <Settings2 />
       </div>
       <Separator className="my-3" />
-      <div className="mb-4 flex flex-col gap-3">
+      <div className="mb-4 flex flex-col gap-2">
         <Controller
           control={control}
           name="mode"
@@ -80,7 +80,7 @@ const FormConfiguration: React.FC<FormConfigurationProps> = ({ methods }) => {
           )}
         />
       </div>
-      <div className="mb-4 flex flex-col gap-3">
+      <div className="mb-4 flex flex-col gap-2">
         <Controller
           control={control}
           name="reValidateMode"
@@ -99,13 +99,13 @@ const FormConfiguration: React.FC<FormConfigurationProps> = ({ methods }) => {
           )}
         />
       </div>
-      <div className="mb-4 flex flex-col gap-3">
+      <div className="mb-4 flex flex-col gap-2">
         <Controller
           control={control}
           name="shouldFocusError"
           render={({ field }) => (
             <>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1">
                 <Label htmlFor="shouldFocusError">shouldFocusError</Label>
                 <Tooltip content="Enable or disable built-in focus management." />
               </div>
@@ -114,14 +114,14 @@ const FormConfiguration: React.FC<FormConfigurationProps> = ({ methods }) => {
           )}
         />
       </div>
-      <div className="mb-4 flex flex-col gap-3">
+      <div className="mb-4 flex flex-col gap-2">
         <Controller
           control={control}
           name="delayError"
           render={({ field }) => (
             <div>
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1">
                   <Label>delayError</Label>
                   <Tooltip content="Delay error from appearing instantly (in ms)." />
                 </div>
@@ -134,13 +134,13 @@ const FormConfiguration: React.FC<FormConfigurationProps> = ({ methods }) => {
           )}
         />
       </div>
-      <div className="mb-4 flex flex-col gap-3">
+      <div className="mb-4 flex flex-col gap-2">
         <Controller
           control={control}
           name="disabled"
           render={({ field }) => (
             <>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1">
                 <Label htmlFor="disabled">disabled</Label>
                 <Tooltip content="Disable the entire form with all associated inputs." />
               </div>
@@ -149,13 +149,13 @@ const FormConfiguration: React.FC<FormConfigurationProps> = ({ methods }) => {
           )}
         />
       </div>
-      <div className="mb-4 flex flex-col gap-3">
+      <div className="mb-4 flex flex-col gap-2">
         <Controller
           control={control}
           name="showState"
           render={({ field }) => (
             <>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1">
                 <Label htmlFor="showState">Show State</Label>
                 <Tooltip content="Show form and field state (not part of React Hook Form)." />
               </div>
