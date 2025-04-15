@@ -36,7 +36,7 @@ const TextField: ForwardRefRenderFunction<HTMLInputElement, TextFieldProps> = (
   return (
     <div className="mb-4">
       {label && (
-        <div className="justify mb-2 flex items-center gap-2 leading-4">
+        <div className="justify mb-2 flex flex-wrap items-center gap-2 leading-4">
           <Label className="font-bold" htmlFor={fieldName}>
             {label}
           </Label>

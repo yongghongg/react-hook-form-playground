@@ -1,4 +1,4 @@
-import { FormConfigType, ModeType, ReValidateMode } from '@/components/FormConfiguration/FormConfiguration.type';
+import { FormConfigType, ModeType, ReValidateMode } from '@/app/playground/playground.types';
 import { Tooltip } from '@/components/Tooltip';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -55,7 +55,7 @@ const reValidateModes: ReValidateMode[] = ['onBlur', 'onChange', 'onSubmit'];
 const FormConfiguration: React.FC<FormConfigurationProps> = ({ methods }) => {
   const { control } = methods;
   return (
-    <div className="mb-8">
+    <div className="mb-8 overflow-auto px-2 pt-4 lg:pt-8">
       <div className="flex-center flex justify-between">
         <h2 className="font-bold">useForm Configuration</h2>
         <Settings2 />

@@ -1,4 +1,4 @@
-import Playground from '@/app/playground/Playground';
+import Playground from '@/app/playground/components/Playground';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {

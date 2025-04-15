@@ -1,7 +1,7 @@
 'use client';
 
-import FormConfiguration from '@/components/FormConfiguration/FormConfiguration';
-import { FormConfigType } from '@/components/FormConfiguration/FormConfiguration.type';
+import FormConfiguration from '@/app/playground/components/FormConfiguration';
+import { FormConfigType } from '@/app/playground/playground.types';
 import TextField from '@/components/TextField/TextField';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -168,7 +168,7 @@ export default function SimpleLogin() {
           </div>
         </aside>
         <main className="relative py-4 lg:gap-10 lg:py-6">
-          <div className="mx-auto my-12 max-w-sm">
+          <div className="mx-auto my-12 max-w-md">
             <SimpleLoginForm
               key={uniqueKey}
               mode={selectedMode}

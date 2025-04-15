@@ -5,11 +5,11 @@ import Link from 'next/link';
 const Header: React.FC = () => {
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <nav className="container flex h-14 max-w-screen-2xl items-center justify-between">
+      <nav className="container flex h-12 max-w-screen-2xl items-center justify-between md:h-14">
         <div className="flex gap-8">
           <Link href="/" className="flex gap-1">
             <Shapes />
-            <span>RHF Playground</span>
+            <span className="hidden md:block">RHF Playground</span>
           </Link>
           <Link className="hover:underline hover:underline-offset-4" href="/playground">
             Playground
